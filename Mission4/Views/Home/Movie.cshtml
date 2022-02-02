@@ -9,8 +9,14 @@
     <form method="post">
         <div class="form-row">
             <div class="col">
-                <label asp-for="category">Category</label>
-                <input asp-for="category" class="form-control" />
+                <label asp-for="categoryId">Category</label>
+                <select asp-for="categoryId" class="form-control">
+                    <option value="">Select a category</option>
+                    @foreach (Category cat in ViewBag.Category)
+                    {
+                        <option value="@cat.categoryId">@cat.category</option>
+                    }
+                </select>
 
                 <label asp-for="year">Year</label>
                 <input asp-for="year" class="form-control" />
@@ -51,12 +57,5 @@
         </div>
     </form>
 
-    @if (!ViewData.ModelState.IsValid)
-    {
-        <p>@ViewData.ModelState["Category"].Errors[0].ErrorMessage</p>
-        <p>@ViewData.ModelState["Title"].Errors[0].ErrorMessage</p>
-        <p>@ViewData.ModelState["Year"].Errors[0].ErrorMessage</p>
-        <p>@ViewData.ModelState["Director"].Errors[0].ErrorMessage</p>
-        <p>@ViewData.ModelState["Rating"].Errors[0].ErrorMessage</p>
-    }
+    <div asp-validation-summary="All"></div>
 </div>

@@ -13,13 +13,31 @@ namespace Mission4.Models
             // Nothing as of right now
         }
         public DbSet<MovieForm> Responses { get; set; }
+        public DbSet<Category> categories { get; set; }
         protected override void OnModelCreating(ModelBuilder mb)
         {
+            mb.Entity<Category>().HasData(
+                new Category
+                {
+                    categoryId = 1,
+                    category = "Action/Adventure"
+                },
+                new Category
+                {
+                    categoryId = 2,
+                    category = "Fantasy/Action"
+                },
+                new Category
+                {
+                    categoryId = 3,
+                    category = "Sci-fi"
+                }
+                );
             mb.Entity<MovieForm>().HasData(
                     new MovieForm
                     {
                         movieId = 1,
-                        category = "Action/Adventure",
+                        categoryId = 1,
                         title = "Inception",
                         year = 2010,
                         director = "Christopher Nolan",
@@ -28,7 +46,7 @@ namespace Mission4.Models
                     new MovieForm
                     {
                         movieId = 2,
-                        category = "Fantasy/Action",
+                        categoryId = 2,
                         title = "Demon Slayer: Kimetsu no Yaiba – The Movie: Mugen Train",
                         year = 2020,
                         director = "Haruo Sotozaki",
@@ -38,7 +56,7 @@ namespace Mission4.Models
                     new MovieForm
                     {
                         movieId = 3,
-                        category = "Sci-fi",
+                        categoryId = 3,
                         title = "Star Wars: Episode IV - A New Hope",
                         year = 1977,
                         director = "George Lucas",

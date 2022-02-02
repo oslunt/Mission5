@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Mission4.Models;
 using System;
@@ -33,6 +34,7 @@ namespace Mission4.Controllers
         [HttpGet]
         public IActionResult Movie()
         {
+            ViewBag.Category = _moviesContext.categories.ToList();
             return View();
         }
 
@@ -45,7 +47,42 @@ namespace Mission4.Controllers
                 _moviesContext.SaveChanges();
                 return View("MvConfirm", mf);
             }
-            return View("Movie", mf);
+            ViewBag.Category = _moviesContext.categories.ToList();
+            return View(mf);
+        }
+        public IActionResult MovieList()
+        {
+            var movies = _moviesContext.Responses
+                .Include(x => x.categories)
+                .ToList();
+            return View(movies);
+        }
+        [HttpGet]
+        public IActionResult Edit(int movieid)
+        {
+            ViewBag.Category = _moviesContext.categories.ToList();
+            var movie = _moviesContext.Responses.Single(x => x.movieId == movieid);
+            return View("Movie", movie);
+        }
+        [HttpPost]
+        public IActionResult Edit(MovieForm mf)
+        {
+            _moviesContext.Update(mf);
+            _moviesContext.SaveChanges();
+            return RedirectToAction("MovieList");
+        }
+        [HttpGet]
+        public IActionResult Delete(int movieid)
+        {
+            var movie = _moviesContext.Responses.Single(x => x.movieId == movieid);
+            return View(movie);
+        }
+        [HttpPost]
+        public IActionResult Delete(MovieForm mf)
+        {
+            _moviesContext.Remove(mf);
+            _moviesContext.SaveChanges();
+            return RedirectToAction("MovieList");
         }
         public IActionResult Privacy()
         {

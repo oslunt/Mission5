@@ -9,7 +9,7 @@ using Mission4.Models;
 namespace Mission4.Migrations
 {
     [DbContext(typeof(MoviesContext))]
-    [Migration("20220126004425_Initial")]
+    [Migration("20220131173758_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -18,15 +18,46 @@ namespace Mission4.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "3.1.22");
 
-            modelBuilder.Entity("Mission4.Models.MovieForm", b =>
+            modelBuilder.Entity("Mission4.Models.Category", b =>
                 {
-                    b.Property<int>("movieId")
+                    b.Property<int>("categoryId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("category")
                         .IsRequired()
                         .HasColumnType("TEXT");
+
+                    b.HasKey("categoryId");
+
+                    b.ToTable("categories");
+
+                    b.HasData(
+                        new
+                        {
+                            categoryId = 1,
+                            category = "Action/Adventure"
+                        },
+                        new
+                        {
+                            categoryId = 2,
+                            category = "Fantasy/Action"
+                        },
+                        new
+                        {
+                            categoryId = 3,
+                            category = "Sci-fi"
+                        });
+                });
+
+            modelBuilder.Entity("Mission4.Models.MovieForm", b =>
+                {
+                    b.Property<int>("movieId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("categoryId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("director")
                         .IsRequired()
@@ -56,13 +87,15 @@ namespace Mission4.Migrations
 
                     b.HasKey("movieId");
 
+                    b.HasIndex("categoryId");
+
                     b.ToTable("Responses");
 
                     b.HasData(
                         new
                         {
                             movieId = 1,
-                            category = "Action/Adventure",
+                            categoryId = 1,
                             director = "Christopher Nolan",
                             edited = false,
                             rating = "PG-13",
@@ -72,7 +105,7 @@ namespace Mission4.Migrations
                         new
                         {
                             movieId = 2,
-                            category = "Fantasy/Action",
+                            categoryId = 2,
                             director = "Haruo Sotozaki",
                             edited = false,
                             note = "Watch TV show first",
@@ -83,7 +116,7 @@ namespace Mission4.Migrations
                         new
                         {
                             movieId = 3,
-                            category = "Sci-fi",
+                            categoryId = 3,
                             director = "George Lucas",
                             edited = false,
                             lentTo = "Mom",
@@ -91,6 +124,15 @@ namespace Mission4.Migrations
                             title = "Star Wars: Episode IV - A New Hope",
                             year = 1977
                         });
+                });
+
+            modelBuilder.Entity("Mission4.Models.MovieForm", b =>
+                {
+                    b.HasOne("Mission4.Models.Category", "category")
+                        .WithMany()
+                        .HasForeignKey("categoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
